@@ -1,10 +1,7 @@
 package controllers
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
-	"os"
 	"pessoalAPI/db"
 
 	"github.com/gin-gonic/gin"
@@ -38,6 +35,7 @@ func (ctrl PessoalController) GetPessoal(c *gin.Context) { // Hello
 	defer rows.Close()
 
 	var pessoas []Pessoal
+
 	var id, id_pessoa int
 	var siape, nome, matricula_interna, nome_identificacao, data_nascimento, sexo string
 	for rows.Next() {
@@ -60,14 +58,8 @@ func (ctrl PessoalController) GetPessoal(c *gin.Context) { // Hello
 	if err := rows.Err(); err != nil {
 		log.Fatal(err)
 	}
-	jsonPessoal, errr := json.Marshal(pessoas)
-	if errr != nil {
-		log.Fatal(err)
-	}
-	fmt.Fprintf(os.Stdout, "%s", jsonPessoal)
-	c.JSON(200, gin.H{
-		"message": "eh",
-	})
+	c.JSON(200, pessoas)
+
 	if err != nil {
 		return
 	}
