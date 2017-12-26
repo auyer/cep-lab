@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"log"
 	"pessoalAPI/db"
 
 	"github.com/gin-gonic/gin"
@@ -22,17 +23,24 @@ type PessoalController struct{}
 
 func (ctrl PessoalController) GetPessoal(c *gin.Context) { // Hello
 	//func (ctrl PessoalController) getPessoal(c *gin.Context) (pessoal Pessoal, err error) {
-	q := `select s.id_servidor, s.siape, s.id_pessoa, s.matricula_interna, 
-		s.id_foto, s.nome_identificacao, 
-		p.nome, p.data_nascimento, p.sexo from rh.servidor s 
-	inner join comum.pessoa p on (s.id_pessoa = p.id_pessoa) and (p.tipo = "F")`
+	// q := `select s.id_servidor, s.siape, s.id_pessoa, s.matricula_interna,
+	// 	s.id_foto, s.nome_identificacao,
+	// 	p.nome, p.data_nascimento, p.sexo from rh.servidor s
+	// inner join comum.pessoa p on (s.id_pessoa = p.id_pessoa) `
 
-	row, err := db.GetDB().Query(q)
+	q2 := "select id_servidor from rh.servidor"
+
+	var pessoas []int64
+	row, err := db.GetDB().Query(q2)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Print(row.Scan())
 	//	err = db.GetDB().Select(&pessoal, q)
-	fmt.Sprint(row)
+	fmt.Print(pessoas)
 
 	c.JSON(200, gin.H{
-		"message": row,
+		"message": "eh",
 	})
 	if err != nil {
 		return
