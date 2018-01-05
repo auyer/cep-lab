@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"log"
-	"pessoalAPI/db"
+	"pessoalAPI-gingonic/db"
 
 	"github.com/gin-gonic/gin"
 )

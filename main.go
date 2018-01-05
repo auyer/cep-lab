@@ -1,8 +1,8 @@
 package main
 
 import (
-	"pessoalAPI/controllers"
-	"pessoalAPI/db"
+	"pessoalAPI-gingonic/controllers"
+	"pessoalAPI-gingonic/db"
 
 	"github.com/gin-gonic/gin"
 )
