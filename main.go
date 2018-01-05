@@ -11,6 +11,7 @@ func main() {
 	r := gin.Default()
 
 	db.Init()
+	defer db.GetDB().Db.Close()
 	pessoal := new(controllers.PessoalController)
 
 	r.GET("/pessoal", pessoal.GetPessoal)
