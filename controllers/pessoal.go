@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"pessoalAPI-gingonic/db"
+	"regexp"
 
 	"github.com/gin-gonic/gin"
 )
@@ -68,6 +69,12 @@ func (ctrl PessoalController) GetPessoal(c *gin.Context) {
 func (ctrl PessoalController) GetPessoalMat(c *gin.Context) {
 	mat := c.Param("matricula") // URL parameter
 	// Data security checking to be insterted here
+	r, _ := regexp.Compile("[0-9]+")
+	matched := r.FindString(mat)
+	if matched != mat {
+		c.JSON(404, nil)
+		return
+	}
 
 	q := fmt.Sprintf(`select s.id_servidor, s.siape, s.id_pessoa, s.matricula_interna, s.nome_identificacao,
 		p.nome, p.data_nascimento, p.sexo from rh.servidor s
