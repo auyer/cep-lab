@@ -19,21 +19,18 @@ type Pessoal struct {
 	Sexo               string `db:"sexo" json:"sexo"`
 }
 
-type PessoalController struct{}
+type PessoalController struct{} // THis is used to make functions callable from PessoalCOntroller
 
-func (ctrl PessoalController) GetPessoal(c *gin.Context) { // Hello
-	//func (ctrl PessoalController) getPessoal(c *gin.Context) (pessoal Pessoal, err error) {
+func (ctrl PessoalController) GetPessoal(c *gin.Context) {
 	q := `select s.id_servidor, s.siape, s.id_pessoa, s.matricula_interna, s.nome_identificacao,
 		p.nome, p.data_nascimento, p.sexo from rh.servidor s
-	inner join comum.pessoa p on (s.id_pessoa = p.id_pessoa)`
+	inner join comum.pessoa p on (s.id_pessoa = p.id_pessoa)` //Manual query
 
-	// q2 := "select id_servidor from rh.servidor"
-
-	rows, err := db.GetDB().Query(q)
+	rows, err := db.GetDB().Query(q) //Get Database cursor from DB module
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer rows.Close()
+	defer rows.Close() //will close DB after function GetPessoal is over.
 
 	var pessoas []Pessoal
 
@@ -68,14 +65,13 @@ func (ctrl PessoalController) GetPessoal(c *gin.Context) { // Hello
 	return
 }
 
-func (ctrl PessoalController) GetPessoalMat(c *gin.Context) { // Hello
-	//func (ctrl PessoalController) getPessoal(c *gin.Context) (pessoal Pessoal, err error) {
-	mat := c.Param("matricula")
-	// Tratamento de dado mat
+func (ctrl PessoalController) GetPessoalMat(c *gin.Context) {
+	mat := c.Param("matricula") // URL parameter
+	// Data security checking to be insterted here
 
 	q := fmt.Sprintf(`select s.id_servidor, s.siape, s.id_pessoa, s.matricula_interna, s.nome_identificacao,
 		p.nome, p.data_nascimento, p.sexo from rh.servidor s
-	inner join comum.pessoa p on (s.id_pessoa = p.id_pessoa) where s.matricula_interna = %s`, mat)
+	inner join comum.pessoa p on (s.id_pessoa = p.id_pessoa) where s.matricula_interna = %s`, mat) //String formating
 
 	rows, err := db.GetDB().Query(q)
 	if err != nil {
@@ -92,7 +88,7 @@ func (ctrl PessoalController) GetPessoalMat(c *gin.Context) { // Hello
 		if err != nil {
 			log.Fatal(err)
 		}
-		// log.Println(id)
+
 		pessoas = append(pessoas, Pessoal{
 			ID:                 id,
 			Siape:              siape,
