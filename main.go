@@ -14,7 +14,8 @@ func main() {
 	defer db.GetDB().Db.Close()
 	pessoal := new(controllers.PessoalController)
 
-	r.GET("/api/pessoal", pessoal.GetPessoal)
+	r.GET("/api/servidores", pessoal.GetPessoal)
+	r.GET("/api/servidor/:matricula", pessoal.GetPessoalMat)
 	//r.POST("/pong", ping.Pong)
 
 	r.Run() // listen and serve on 0.0.0.0:8080
