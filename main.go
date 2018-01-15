@@ -8,14 +8,15 @@ import (
 )
 
 func main() {
-	r := gin.Default()
+	router := gin.Default()
 
 	db.Init()
 	defer db.GetDB().Db.Close()
-	pessoal := new(controllers.PessoalController) //Controller instance
+	servidor := new(controllers.ServidorController) //Controller instance
 
-	r.GET("/api/servidores", pessoal.GetPessoal)             //Simple route
-	r.GET("/api/servidor/:matricula", pessoal.GetPessoalMat) //Route with URL parameter
+	router.GET("/api/servidores", servidor.GetServidores)           //Simple route
+	router.GET("/api/servidor/:matricula", servidor.GetServidorMat) //Route with URL parameter
+	router.POST("/api/servidor/", servidor.PostServidor)
 
-	r.Run() // listen and serve on 0.0.0.0:8080
+	router.Run() // listen and serve on 0.0.0.0:8080
 }
