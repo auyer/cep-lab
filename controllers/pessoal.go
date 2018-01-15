@@ -117,3 +117,35 @@ func (ctrl ServidorController) GetServidorMat(c *gin.Context) {
 
 	return
 }
+
+func (ctrl ServidorController) PostServidor(c *gin.Context) {
+	var ser Servidor
+	err := c.BindJSON(&ser)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	q := fmt.Sprintf(`
+		INSERT INTO rh.servidor_tmp(
+			nome, nome_identificacao, id_servidor, siape, id_pessoa, matricula_interna, id_foto, 
+			data_nascimento, sexo)
+			VALUES ('%s', '%s', %d, %d, %d, %d, null, '%s', '%s'); 
+			`, ser.Nome, ser.Nome_identificacao, ser.ID, ser.Siape, ser.Id_pessoa, ser.Matricula_interna,
+		ser.Data_nascimento, ser.Sexo) //String formating
+
+	rows, err := db.GetDB().Query(q)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	var pessoas []Servidor
+
+	c.JSON(200, pessoas)
+
+	// if err != nil {
+	// 	return
+	// }
+
+	return
+}
