@@ -69,9 +69,8 @@ func (ctrl PessoalController) GetPessoal(c *gin.Context) {
 func (ctrl PessoalController) GetPessoalMat(c *gin.Context) {
 	mat := c.Param("matricula") // URL parameter
 	// Data security checking to be insterted here
-	r, _ := regexp.Compile("[0-9]+")
-	matched := r.FindString(mat)
-	if matched != mat {
+	r, _ := regexp.Compile(`\b[0-9]+\b`)
+	if !r.MatchString(mat) {
 		c.JSON(404, nil)
 		return
 	}
