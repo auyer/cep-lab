@@ -27,17 +27,6 @@ type Servidor struct {
 	Sexo               string `db:"sexo" json:"sexo"`
 }
 
-type ServidorTextual struct {
-	ID                 string `json:"id"`
-	Siape              string `json:"siape"`
-	Id_pessoa          string `json:"id_pessoa"`
-	Nome               string `json:"nome"`
-	Matricula_interna  string `json:"matricula_interna"`
-	Nome_identificacao string `json:"nome_identificacao"`
-	Data_nascimento    string `json:"data_nascimento"`
-	Sexo               string `json:"sexo"`
-}
-
 type ServidorController struct{} // THis is used to make functions callable from ServidorCOntroller
 
 func (ctrl ServidorController) GetServidores(c *gin.Context) {
@@ -198,9 +187,7 @@ func (ctrl ServidorController) PostServidor(c *gin.Context) {
 		return
 	}
 	// END OF REGEX CHEKING PHASE
-
 	timestamp := time.Now().Unix()
-
 	b := md5.Sum([]byte(fmt.Sprintf(string(ser.Nome), string(timestamp))))
 	bid := binary.BigEndian.Uint64(b[:])
 	// log.Println(strconv.Atoi(string(b[:])))
@@ -212,7 +199,7 @@ func (ctrl ServidorController) PostServidor(c *gin.Context) {
 			nome, nome_identificacao, siape, id_pessoa, matricula_interna, id_foto,
 			data_nascimento, sexo)
 			VALUES ('%s', '%s', %d, %d, %d, null, '%s', '%s');
-			`, ser.Nome, ser.Nome_identificacao, ser.Siape, ser.Id_pessoa, bid%9999,
+			`, ser.Nome, ser.Nome_identificacao, ser.Siape, ser.Id_pessoa, bid%99999,
 		ser.Data_nascimento, ser.Sexo) //String formating
 
 	rows, err := db.GetDB().Query(q)
