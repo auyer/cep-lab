@@ -36,7 +36,11 @@ func (ctrl ServidorController) GetServidores(c *gin.Context) {
 
 	rows, err := db.GetDB().Query(q) //Get Database cursor from DB module
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		c.JSON(400, ErrorBody{
+			Reason: err.Error(),
+		})
+		return
 	}
 	defer rows.Close() //will close DB after function GetServidor is over.
 
@@ -47,7 +51,11 @@ func (ctrl ServidorController) GetServidores(c *gin.Context) {
 	for rows.Next() {
 		err := rows.Scan(&id, &siape, &id_pessoa, &matricula_interna, &nome_identificacao, &nome, &data_nascimento, &sexo)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
+			c.JSON(400, ErrorBody{
+				Reason: err.Error(),
+			})
+			return
 		}
 		// log.Println(id)
 		servidores = append(servidores, Servidor{
@@ -62,11 +70,19 @@ func (ctrl ServidorController) GetServidores(c *gin.Context) {
 		})
 	}
 	if err := rows.Err(); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		c.JSON(400, ErrorBody{
+			Reason: err.Error(),
+		})
+		return
 	}
 	c.JSON(200, servidores)
 
 	if err != nil {
+		log.Println(err)
+		c.JSON(400, ErrorBody{
+			Reason: err.Error(),
+		})
 		return
 	}
 
@@ -76,10 +92,12 @@ func (ctrl ServidorController) GetServidores(c *gin.Context) {
 func (ctrl ServidorController) GetServidorMat(c *gin.Context) {
 	mat := c.Param("matricula") // URL parameter
 	// Data security checking to be insterted here
-	r, _ := regexp.Compile(`\b[0-9]+\b`)
+	r, err := regexp.Compile(`\b[0-9]+\b`)
 	if !r.MatchString(mat) {
-		log.Println("REGEX CAUGHT AN ERROR")
-		c.JSON(404, nil)
+		log.Println(err)
+		c.JSON(404, ErrorBody{
+			Reason: err.Error(),
+		})
 		return
 	}
 
@@ -89,7 +107,11 @@ func (ctrl ServidorController) GetServidorMat(c *gin.Context) {
 
 	rows, err := db.GetDB().Query(q)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		c.JSON(400, ErrorBody{
+			Reason: err.Error(),
+		})
+		return
 	}
 	defer rows.Close()
 
@@ -100,7 +122,11 @@ func (ctrl ServidorController) GetServidorMat(c *gin.Context) {
 	for rows.Next() {
 		err := rows.Scan(&id, &siape, &id_pessoa, &matricula_interna, &nome_identificacao, &nome, &data_nascimento, &sexo)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
+			c.JSON(400, ErrorBody{
+				Reason: err.Error(),
+			})
+			return
 		}
 
 		servidores = append(servidores, Servidor{
@@ -115,7 +141,11 @@ func (ctrl ServidorController) GetServidorMat(c *gin.Context) {
 		})
 	}
 	if err := rows.Err(); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		c.JSON(400, ErrorBody{
+			Reason: err.Error(),
+		})
+		return
 	}
 	c.JSON(200, servidores)
 
@@ -132,9 +162,9 @@ func (ctrl ServidorController) PostServidor(c *gin.Context) {
 	var Reasons []ErrorBody
 	err := c.ShouldBindJSON(&ser)
 	if err != nil {
-		log.Println("BINDING ERROR")
+		log.Println(err)
 		c.JSON(400, ErrorBody{
-			Reason: "Wrong Datatype",
+			Reason: err.Error(),
 		})
 		return
 	}
@@ -204,8 +234,11 @@ func (ctrl ServidorController) PostServidor(c *gin.Context) {
 
 	rows, err := db.GetDB().Query(q)
 	if err != nil {
-		log.Print("|DATABASE ERROR|")
-		log.Print(err)
+		log.Println(err)
+		c.JSON(400, ErrorBody{
+			Reason: err.Error(),
+		})
+		return
 	}
 
 	defer rows.Close()
