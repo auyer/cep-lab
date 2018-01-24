@@ -5,9 +5,10 @@ import (
 	"encoding/binary"
 	"fmt"
 	"log"
-	"pessoalAPI-gingonic/db"
 	"regexp"
 	"time"
+
+	"github.com/latitude-RESTsec-lab/api-gingonic/db"
 
 	"github.com/gin-gonic/gin"
 )

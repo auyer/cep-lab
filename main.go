@@ -1,8 +1,8 @@
 package main
 
 import (
-	"pessoalAPI-gingonic/controllers"
-	"pessoalAPI-gingonic/db"
+	"github.com/latitude-RESTsec-lab/api-gingonic/controllers"
+	"github.com/latitude-RESTsec-lab/api-gingonic/db"
 
 	"github.com/gin-gonic/gin"
 )
