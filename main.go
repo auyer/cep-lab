@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/latitude-RESTsec-lab/api-gingonic/controllers"
 	"github.com/latitude-RESTsec-lab/api-gingonic/db"
@@ -11,7 +12,13 @@ import (
 )
 
 func main() {
-
+	file, fileErr := os.Create("server.log")
+	if fileErr != nil {
+		fmt.Println(fileErr)
+		return
+	}
+	gin.DefaultWriter = file
+	gin.SetMode(gin.ReleaseMode)
 	// BEGIN HTTPS
 
 	httpsRouter := gin.Default()
