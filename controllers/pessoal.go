@@ -13,10 +13,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//ErrorBody structure is used to improve error reporting in a JSON response body
 type ErrorBody struct {
 	Reason string `json:"reason"`
 }
 
+//Servidor structure is used to store data used by this API
 type Servidor struct {
 	ID                int    `db:"id, primarykey, autoincrement" json:"id"`
 	Siape             int    `db:"siape" json:"siape"`
@@ -28,8 +30,10 @@ type Servidor struct {
 	Sexo              string `db:"sexo" json:"sexo"`
 }
 
+//ServidorController is used to export the API handler functions
 type ServidorController struct{} // THis is used to make functions callable from ServidorCOntroller
 
+//GetServidor funtion returns the full list of "servidores" in the database
 func (ctrl ServidorController) GetServidores(c *gin.Context) {
 	q := `select s.id_servidor, s.siape, s.id_pessoa, s.matricula_interna, s.nome_identificacao,
 		p.nome, p.data_nascimento, p.sexo from rh.servidor s
@@ -91,6 +95,7 @@ func (ctrl ServidorController) GetServidores(c *gin.Context) {
 	return
 }
 
+//GetServidor funtion returns the "servidor" matching a given id
 func (ctrl ServidorController) GetServidorMat(c *gin.Context) {
 	mat := c.Param("matricula") // URL parameter
 	// Data security checking to be insterted here
@@ -159,6 +164,7 @@ func (ctrl ServidorController) GetServidorMat(c *gin.Context) {
 	return
 }
 
+//PostServidor function reads a JSON body and store it in the database
 func (ctrl ServidorController) PostServidor(c *gin.Context) {
 	regexcheck := false
 	var ser Servidor
