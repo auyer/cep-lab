@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/latitude-RESTsec-lab/api-gingonic/controllers"
@@ -14,8 +15,9 @@ func main() {
 	file, fileErr := os.Create("server.log")
 	if fileErr != nil {
 		fmt.Println(fileErr)
-		return
+		file = os.Stdout
 	}
+	log.SetOutput(file)
 	gin.DefaultWriter = file
 	gin.SetMode(gin.ReleaseMode)
 	// BEGIN HTTPS
