@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/latitude-RESTsec-lab/api-gingonic/controllers"
@@ -34,11 +33,6 @@ func main() {
 	// BEGIN HTTP
 	httpRouter := gin.Default()
 
-	httpRouter.GET("/", func(c *gin.Context) {
-		log.Print(c.Request.Host)
-		log.Print(c.Request.URL.Path)
-		c.JSON(200, nil)
-	})
 	httpRouter.GET("/api/servidores/", func(c *gin.Context) {
 		c.Redirect(302, fmt.Sprint("https://", c.Request.Host, ".", c.Request.URL.Path))
 	})
