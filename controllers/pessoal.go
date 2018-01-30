@@ -245,7 +245,7 @@ func (ctrl ServidorController) PostServidor(c *gin.Context) {
 
 	var pessoas []Servidor
 
-	c.JSON(200, pessoas)
+	c.JSON(201, pessoas)
 
 	// if err != nil {
 	// 	return
