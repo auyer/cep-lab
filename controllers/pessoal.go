@@ -173,12 +173,29 @@ func (ctrl ServidorController) PostServidor(c *gin.Context) {
 	}
 
 	// REGEX CHEKING PHASE
+
 	r, _ := regexp.Compile(`^(19[0-9]{2}|2[0-9]{3})-(0[1-9]|1[012])-([123]0|[012][1-9]|31)$`)
-	if !r.MatchString(ser.Datanascimento) {
+	if (!r.MatchString(ser.Datanascimento)){
 		regexcheck = true
 		Reasons = append(Reasons, ErrorBody{
 			Reason: "[data_nascimento] failed to match API requirements. It should look like this: 1969-02-12",
 		})
+	}else{
+		now := time.Now()	
+		now.Format(time.RFC3339)
+		time, err := time.Parse("2006-01-02 15:04:05 -0200",fmt.Sprint(ser.Datanascimento," 00:00:00 -0200"))
+		if err != nil {
+			log.Println(err)
+			c.JSON(500, ErrorBody{
+				Reason: err.Error(),
+			})
+		}
+		if(!now.After(time)){
+			regexcheck = true
+			Reasons = append(Reasons, ErrorBody{
+				Reason: "[data_nascimento] failed to match API requirements. It should not be in future",
+		})
+		}
 	}
 	r, _ = regexp.Compile(`^([A-Z][a-z]+([ ]?[a-z]?['-]?[A-Z][a-z]+)*)$`)
 	if !r.MatchString(ser.Nome) {
