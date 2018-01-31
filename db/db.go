@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/go-gorp/gorp"
+	"github.com/latitude-RESTsec-lab/api-gingonic/config"
 	_ "github.com/lib/pq" //import postgres
 )
 
@@ -15,21 +15,14 @@ type DB struct {
 	*sql.DB
 }
 
-const (
-	DbUser     = "sipac"
-	DbPassword = "1qaz2wsxsipac"
-	DbName     = "administrativo"
-	DbHost     = "10.30.0.10"
-	DbPort     = "5432"
-)
-
 var db *gorp.DbMap
 
 //Init ...
 func Init() {
 
 	dbinfo := fmt.Sprintf("host= %s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		DbHost, DbPort, DbUser, DbPassword, DbName)
+		config.ConfigParams.DbHost, config.ConfigParams.DbPort, config.ConfigParams.DbUser,
+		config.ConfigParams.DbPassword, config.ConfigParams.DbName)
 
 	var err error
 	db, err = ConnectDB(dbinfo)
@@ -49,7 +42,7 @@ func ConnectDB(dataSourceName string) (*gorp.DbMap, error) {
 		return nil, err
 	}
 	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.PostgresDialect{}}
-	dbmap.TraceOn("[gorp]", log.New(os.Stdout, "golang-gin:", log.Lmicroseconds)) //Trace database requests
+	dbmap.TraceOn("[DB-GIN]", log.New(config.LogFile, "golang-GIN:", log.Lmicroseconds)) //Trace database requests
 	return dbmap, nil
 }
 

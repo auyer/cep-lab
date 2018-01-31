@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 
+	"github.com/latitude-RESTsec-lab/api-gingonic/config"
 	"github.com/latitude-RESTsec-lab/api-gingonic/controllers"
 	"github.com/latitude-RESTsec-lab/api-gingonic/db"
 
@@ -12,14 +12,19 @@ import (
 )
 
 func main() {
-	file, fileErr := os.Create("server.log")
-	if fileErr != nil {
-		fmt.Println(fileErr)
-		file = os.Stdout
+	fmt.Println("Starting Gin Gonic API")
+	err := config.ReadConfig()
+	if err != nil {
+		fmt.Print("Error reading configuration file")
+		log.Print(err.Error())
+		return
 	}
-	log.SetOutput(file)
-	gin.DefaultWriter = file
-	gin.SetMode(gin.ReleaseMode)
+
+	log.SetOutput(config.LogFile)
+	gin.DefaultWriter = config.LogFile
+	if config.ConfigParams.Debug != "true" {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	// BEGIN HTTPS
 
 	httpsRouter := gin.Default()
@@ -42,6 +47,11 @@ func main() {
 		c.Redirect(302, fmt.Sprint("https://", c.Request.Host, ".", c.Request.URL.Path))
 	})
 
-	go httpRouter.Run(":80")
-	httpsRouter.RunTLS(":443", "./devssl/server.pem", "./devssl/server.key") // listen and serve on 0.0.0.0:8080
+	go httpRouter.Run(":" + config.ConfigParams.HttpPort)
+	err = httpsRouter.RunTLS(":"+config.ConfigParams.HttpsPort, config.ConfigParams.TLSCertLocation, config.ConfigParams.TLSKeyLocation) // listen and serve on 0.0.0.0:8080
+	if err != nil {
+		fmt.Println(err.Error())
+		log.Fatal(err)
+		return
+	}
 }
