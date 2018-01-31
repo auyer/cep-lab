@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"time"
 
 	"github.com/latitude-RESTsec-lab/api-gingonic/db"
@@ -256,13 +257,13 @@ func (ctrl ServidorController) PostServidor(c *gin.Context) {
 	timestamp := time.Now().UTC().Format("2006-01-02T15:04:05-0700")
 	b := md5.Sum([]byte(fmt.Sprintf(string(ser.Nome), string(timestamp))))
 	bid := binary.BigEndian.Uint64(b[:])
-
+	ser.Matriculainterna = int(bid % 99999)
 	q := fmt.Sprintf(`
 		INSERT INTO rh.servidor_tmp(
 			nome, nome_identificacao, siape, id_pessoa, matricula_interna, id_foto,
 			data_nascimento, sexo)
 			VALUES ('%s', '%s', %d, %d, %d, null, '%s', '%s');
-			`, ser.Nome, ser.Nomeidentificacao, ser.Siape, ser.Idpessoa, bid%99999,
+			`, ser.Nome, ser.Nomeidentificacao, ser.Siape, ser.Idpessoa, ser.Matriculainterna,
 		ser.Datanascimento, ser.Sexo) //String formating
 
 	rows, err := db.GetDB().Query(q)
@@ -275,13 +276,8 @@ func (ctrl ServidorController) PostServidor(c *gin.Context) {
 	}
 
 	defer rows.Close()
-
-	c.JSON(201, gin.H{
-		"matriculainterna": int(bid % 99999),
-	})
-	// if err != nil {
-	// 	return
-	// }
+	c.Status(201)
+	c.Header("location", "https://"+c.Request.Host+"/api/servidor/"+strconv.Itoa(ser.Matriculainterna))
 
 	return
 }
