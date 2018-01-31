@@ -203,6 +203,11 @@ func (ctrl ServidorController) PostServidor(c *gin.Context) {
 		Reasons = append(Reasons, ErrorBody{
 			Reason: "[nome] failed to match API requirements. It should look like this: Firstname Middlename(optional) Lastname",
 		})
+	}else if(len(ser.Nome)>100){
+		regexcheck = true
+		Reasons = append(Reasons, ErrorBody{
+			Reason: "[nome] failed to match API requirements. It should have a maximum of 100 characters",
+		})
 	}
 	r, _ = regexp.Compile(`^([A-Z][a-z]+([ ]?[a-z]?['-]?[A-Z][a-z]+)*)$`)
 	if !r.MatchString(ser.Nomeidentificacao) {
