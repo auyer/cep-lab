@@ -270,9 +270,7 @@ func (ctrl ServidorController) PostServidor(c *gin.Context) {
 
 	defer rows.Close()
 
-	var pessoas []Servidor
-
-	c.JSON(201, pessoas)
+	c.JSON(201, bid%99999)
 
 	// if err != nil {
 	// 	return
