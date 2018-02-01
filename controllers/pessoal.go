@@ -179,12 +179,29 @@ func (ctrl ServidorController) PostServidor(c *gin.Context) {
 	}
 
 	// REGEX CHEKING PHASE
+
 	r, _ := regexp.Compile(`^(19[0-9]{2}|2[0-9]{3})-(0[1-9]|1[012])-([123]0|[012][1-9]|31)$`)
-	if !r.MatchString(ser.Datanascimento) {
+	if (!r.MatchString(ser.Datanascimento)){
 		regexcheck = true
 		Reasons = append(Reasons, ErrorBody{
 			Reason: "[data_nascimento] failed to match API requirements. It should look like this: 1969-02-12",
 		})
+	}else{
+		now := time.Now()	
+		now.Format(time.RFC3339)
+		time, err := time.Parse("2006-01-02 15:04:05 -0200",fmt.Sprint(ser.Datanascimento," 00:00:00 -0200"))
+		if err != nil {
+			log.Println(err)
+			c.JSON(500, ErrorBody{
+				Reason: err.Error(),
+			})
+		}
+		if(!now.After(time)){
+			regexcheck = true
+			Reasons = append(Reasons, ErrorBody{
+				Reason: "[data_nascimento] failed to match API requirements. It should not be in future",
+		})
+		}
 	}
 	r, _ = regexp.Compile(`^([A-Z][a-z]+([ ]?[a-z]?['-]?[A-Z][a-z]+)*)$`)
 	if !r.MatchString(ser.Nome) {
@@ -192,12 +209,22 @@ func (ctrl ServidorController) PostServidor(c *gin.Context) {
 		Reasons = append(Reasons, ErrorBody{
 			Reason: "[nome] failed to match API requirements. It should look like this: Firstname Middlename(optional) Lastname",
 		})
+	}else if(len(ser.Nome)>100){
+		regexcheck = true
+		Reasons = append(Reasons, ErrorBody{
+			Reason: "[nome] failed to match API requirements. It should have a maximum of 100 characters",
+		})
 	}
 	r, _ = regexp.Compile(`^([A-Z][a-z]+([ ]?[a-z]?['-]?[A-Z][a-z]+)*)$`)
 	if !r.MatchString(ser.Nomeidentificacao) {
 		regexcheck = true
 		Reasons = append(Reasons, ErrorBody{
-			Reason: string("[nome_identificacao] failed to match API requirements. It should look like this: Firstname Middlename(optional) Lastname"),
+			Reason: "[nome_identificacao] failed to match API requirements. It should look like this: Firstname Middlename(optional) Lastname",
+		})
+	}else if(len(ser.Nomeidentificacao)>100){
+		regexcheck = true
+		Reasons = append(Reasons, ErrorBody{
+			Reason: "[nome_identificacao] failed to match API requirements. It should have a maximum of 100 characters",
 		})
 	}
 	r, _ = regexp.Compile(`\b[MF]{1}\b`)
@@ -249,10 +276,9 @@ func (ctrl ServidorController) PostServidor(c *gin.Context) {
 
 	defer rows.Close()
 
-	var pessoas []Servidor
-
-	c.JSON(201, pessoas)
-
+	c.JSON(201, gin.H{
+		"matriculainterna": int(bid%99999),
+	})
 	// if err != nil {
 	// 	return
 	// }
