@@ -270,8 +270,9 @@ func (ctrl ServidorController) PostServidor(c *gin.Context) {
 
 	defer rows.Close()
 
-	c.JSON(201, bid%99999)
-
+	c.JSON(201, gin.H{
+		"matriculainterna": int(bid%99999),
+	})
 	// if err != nil {
 	// 	return
 	// }
