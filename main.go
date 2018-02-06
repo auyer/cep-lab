@@ -38,16 +38,16 @@ func main() {
 	httpsRouter.POST("/api/servidor/", servidor.PostServidor)
 
 	// BEGIN HTTP
-	httpRouter := gin.Default()
+	// httpRouter := gin.Default()
 
-	httpRouter.GET("/api/servidores/", func(c *gin.Context) {
-		c.Redirect(302, fmt.Sprint("https://", c.Request.Host, ".", c.Request.URL.Path))
-	})
-	httpRouter.GET("/api/servidor/:matricula", func(c *gin.Context) {
-		c.Redirect(302, fmt.Sprint("https://", c.Request.Host, ".", c.Request.URL.Path))
-	})
+	// httpRouter.GET("/api/servidores/", func(c *gin.Context) {
+	// 	c.Redirect(302, fmt.Sprint("https://", c.Request.Host, ".", c.Request.URL.Path))
+	// })
+	// httpRouter.GET("/api/servidor/:matricula", func(c *gin.Context) {
+	// 	c.Redirect(302, fmt.Sprint("https://", c.Request.Host, ".", c.Request.URL.Path))
+	// })
 
-	go httpRouter.Run(":" + config.ConfigParams.HttpPort)
+	// go httpRouter.Run(":" + config.ConfigParams.HttpPort)
 	err = httpsRouter.RunTLS(":"+config.ConfigParams.HttpsPort, config.ConfigParams.TLSCertLocation, config.ConfigParams.TLSKeyLocation) // listen and serve on 0.0.0.0:8080
 	if err != nil {
 		fmt.Println(err.Error())
