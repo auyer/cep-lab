@@ -12,9 +12,12 @@ RUN HTTPS_PROXY=https://10.30.0.10:3128 go get -u all
 RUN HTTPS_PROXY=https://10.30.0.10:3128 go install github.com/latitude-RESTsec-lab/api-gingonic
 
 # Run the outyet command by default when the container starts.
-ENTRYPOINT /go/bin/api-gingonic
-# ENTRYPOINT /bin/bash
+#RUN cp /go/src/github.com/latitude-RESTsec-lab/api-gingonic/config.json /go/bin/config.json
 
-# Document that the service listens on port 8080.
-EXPOSE 80 443
+ADD ./config.json .
+ADD ./devssl ./devssl
+
+EXPOSE 443
+ENTRYPOINT /go/bin/api-gingonic
+# Document that the service listens on port 8080
 
