@@ -8,7 +8,8 @@ ADD . /go/src/github.com/latitude-RESTsec-lab/api-gingonic
 # # Build the outyet command inside the container.
 # # (You may fetch or manage dependencies here,
 # # either manually or with a tool like "godep".)
-RUN HTTPS_PROXY=https://10.30.0.10:3128 go get -u all
+#RUN HTTPS_PROXY=https://10.30.0.10:3128 go get -u all
+RUN HTTPS_PROXY=https://10.30.0.10:3128 go get github.com/lib/pq github.com/go-gorp/gorp github.com/gin-gonic/gin
 RUN HTTPS_PROXY=https://10.30.0.10:3128 go install github.com/latitude-RESTsec-lab/api-gingonic
 
 # Run the outyet command by default when the container starts.
