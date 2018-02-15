@@ -9,9 +9,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/latitude-RESTsec-lab/api-gingonic/db"
-
 	"github.com/gin-gonic/gin"
+	"github.com/latitude-RESTsec-lab/api-gingonic/db"
 )
 
 //ErrorBody structure is used to improve error reporting in a JSON response body
@@ -34,12 +33,11 @@ type Servidor struct {
 //ServidorController is used to export the API handler functions
 type ServidorController struct{} // THis is used to make functions callable from ServidorCOntroller
 
-//GetServidor funtion returns the full list of "servidores" in the database
+//GetServidores funtion returns the full list of "servidores" in the database
 func (ctrl ServidorController) GetServidores(c *gin.Context) {
 	q := `select s.id_servidor, s.siape, s.id_pessoa, s.matricula_interna, s.nome_identificacao,
 		p.nome, p.data_nascimento, p.sexo from rh.servidor s
 	inner join comum.pessoa p on (s.id_pessoa = p.id_pessoa)` //Manual query
-
 	rows, err := db.GetDB().Query(q) //Get Database cursor from DB module
 	if err != nil {
 		log.Println(err)
@@ -49,9 +47,7 @@ func (ctrl ServidorController) GetServidores(c *gin.Context) {
 		return
 	}
 	defer rows.Close() //will close DB after function GetServidor is over.
-
 	var servidores []Servidor
-
 	var id, idpessoa, siape, matriculainterna int
 	var nome, nomeidentificacao, datanascimento, sexo string
 	for rows.Next() {
@@ -84,7 +80,6 @@ func (ctrl ServidorController) GetServidores(c *gin.Context) {
 		return
 	}
 	c.JSON(200, servidores)
-
 	if err != nil {
 		log.Println(err)
 		c.JSON(400, ErrorBody{
@@ -92,11 +87,10 @@ func (ctrl ServidorController) GetServidores(c *gin.Context) {
 		})
 		return
 	}
-
 	return
 }
 
-//GetServidor funtion returns the "servidor" matching a given id
+//GetServidorMat funtion returns the "servidor" matching a given id
 func (ctrl ServidorController) GetServidorMat(c *gin.Context) {
 	mat := c.Param("matricula") // URL parameter
 	// Data security checking to be insterted here
@@ -108,11 +102,9 @@ func (ctrl ServidorController) GetServidorMat(c *gin.Context) {
 		})
 		return
 	}
-
 	q := fmt.Sprintf(`select s.id_servidor, s.siape, s.id_pessoa, s.matricula_interna, s.nome_identificacao,
 		p.nome, p.data_nascimento, p.sexo from rh.servidor s
 	inner join comum.pessoa p on (s.id_pessoa = p.id_pessoa) where s.matricula_interna = %s`, mat) //String formating
-
 	rows, err := db.GetDB().Query(q)
 	if err != nil {
 		log.Println(err)
@@ -122,9 +114,7 @@ func (ctrl ServidorController) GetServidorMat(c *gin.Context) {
 		return
 	}
 	defer rows.Close()
-
 	var servidores []Servidor
-
 	var id, idpessoa, siape, matriculainterna int
 	var nome, nomeidentificacao, datanascimento, sexo string
 	for rows.Next() {
@@ -136,7 +126,6 @@ func (ctrl ServidorController) GetServidorMat(c *gin.Context) {
 			})
 			return
 		}
-
 		date, _ := time.Parse("1969-02-12", datanascimento)
 		servidores = append(servidores, Servidor{
 			ID:                id,
@@ -161,7 +150,6 @@ func (ctrl ServidorController) GetServidorMat(c *gin.Context) {
 	if err != nil {
 		return
 	}
-
 	return
 }
 
@@ -180,7 +168,6 @@ func (ctrl ServidorController) PostServidor(c *gin.Context) {
 	}
 
 	// REGEX CHEKING PHASE
-
 	r, _ := regexp.Compile(`^(19[0-9]{2}|2[0-9]{3})-(0[1-9]|1[012])-([123]0|[012][1-9]|31)$`)
 	if !r.MatchString(ser.Datanascimento) {
 		regexcheck = true
@@ -235,20 +222,6 @@ func (ctrl ServidorController) PostServidor(c *gin.Context) {
 			Reason: "[sexo] failed to match API requirements. It should look like this: M for male, F for female",
 		})
 	}
-	// r, _ = regexp.Compile(`\b[0-9]+\b`)
-	// if !r.MatchString(strconv.Itoa(ser.Siape)) {
-	// 	regexcheck = true
-	// 	Reasons = append(Reasons, ErrorBody{
-	// 		error_reason: "[siape] failed to match API requirements. It should be only numeric.",
-	// 	})
-	// }
-	// r, _ = regexp.Compile(`\b[0-9]+\b`)
-	// if !r.MatchString(strconv.Itoa(ser.Id_pessoa)) {
-	// 	regexcheck = true
-	// 	Reasons = append(Reasons, ErrorBody{
-	// 		error_reason: "[id_pessoa] failed to match API requirements. It should be only numeric.",
-	// 	})
-	// }
 	if regexcheck {
 		c.JSON(400, Reasons)
 		return
@@ -265,7 +238,6 @@ func (ctrl ServidorController) PostServidor(c *gin.Context) {
 			VALUES ('%s', '%s', %d, %d, %d, null, '%s', '%s');
 			`, ser.Nome, ser.Nomeidentificacao, ser.Siape, ser.Idpessoa, ser.Matriculainterna,
 		ser.Datanascimento, ser.Sexo) //String formating
-
 	rows, err := db.GetDB().Query(q)
 	if err != nil {
 		log.Println(err)
@@ -274,10 +246,8 @@ func (ctrl ServidorController) PostServidor(c *gin.Context) {
 		})
 		return
 	}
-
 	defer rows.Close()
 	c.Status(201)
 	c.Header("location", "https://"+c.Request.Host+"/api/servidor/"+strconv.Itoa(ser.Matriculainterna))
-
 	return
 }
