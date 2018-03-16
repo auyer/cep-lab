@@ -36,6 +36,7 @@ func main() {
 	httpsRouter.GET("/api/servidores", servidor.GetServidores)           //Simple route
 	httpsRouter.GET("/api/servidor/:matricula", servidor.GetServidorMat) //Route with URL parameter
 	httpsRouter.POST("/api/servidor/", servidor.PostServidor)
+	httpsRouter.POST("/api/calculo/", servidor.Calculate)
 
 	// BEGIN HTTP
 	// httpRouter := gin.Default()

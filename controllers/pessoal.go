@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"log"
+	"math"
 	"regexp"
 	"strconv"
 	"time"
@@ -250,4 +251,40 @@ func (ctrl ServidorController) PostServidor(c *gin.Context) {
 	c.Status(201)
 	c.Header("location", "https://"+c.Request.Host+"/api/servidor/"+strconv.Itoa(ser.Matriculainterna))
 	return
+}
+
+func (ctrl ServidorController) Calculate(c *gin.Context) {
+	var matrix [][]float64
+	//matrixTwo := make([][]float64, 10)
+	err := c.ShouldBindJSON(&matrix)
+	if err != nil {
+		log.Println(err)
+		c.String(400, err.Error())
+		return
+	}
+	matrix = calc(matrix)
+	c.JSON(200, gin.H{"Result": sum(matrix)})
+
+}
+func calc(matrix [][]float64) [][]float64 {
+	for rowIndex, row := range matrix {
+		relSum := 0.0
+		for _, element := range row {
+			relSum += math.Pow(element, 2)
+		}
+		relSum = relSum / float64(len(row))
+		for index, element := range row {
+			matrix[rowIndex][index] = math.Sqrt(element * relSum)
+		}
+	}
+	return matrix
+}
+func sum(matrix [][]float64) float64 {
+	relSum := 0.0
+	for _, row := range matrix {
+		for _, element := range row {
+			relSum += element
+		}
+	}
+	return relSum
 }
