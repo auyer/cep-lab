@@ -6,8 +6,8 @@ import (
 	"log"
 
 	"github.com/go-gorp/gorp"
-	"github.com/latitude-RESTsec-lab/api-gingonic/config"
 	_ "github.com/lib/pq" //import postgres
+	"github.com/restsec/api-gingonic/config"
 )
 
 //DB ...

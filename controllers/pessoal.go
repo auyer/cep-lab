@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/latitude-RESTsec-lab/api-gingonic/db"
+	"github.com/restsec/api-gingonic/db"
 )
 
 //ErrorBody structure is used to improve error reporting in a JSON response body

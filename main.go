@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/latitude-RESTsec-lab/api-gingonic/config"
-	"github.com/latitude-RESTsec-lab/api-gingonic/controllers"
-	"github.com/latitude-RESTsec-lab/api-gingonic/db"
+	"github.com/restsec/api-gingonic/config"
+	"github.com/restsec/api-gingonic/controllers"
+	"github.com/restsec/api-gingonic/db"
 
 	"github.com/gin-gonic/gin"
 )
