@@ -2,22 +2,22 @@
 # and a workspace (GOPATH) configured at /go.
 FROM golang:alpine
 
-ENV http_proxy 'http://10.30.0.10:3128'
-ENV https_proxy 'https://10.30.0.10:3128'
+#ENV http_proxy 'http://10.30.0.10:3128'
+#ENV https_proxy 'https://10.30.0.10:3128'
 
 RUN apk add --no-cache --virtual git 
 # Copy the local package files to the container's workspace.
-ADD . /go/src/github.com/latitude-RESTsec-lab/api-gingonic
+ADD . /go/src/github.com/restsec/api-gingonic
 
 # # Build the outyet command inside the container.
 # # (You may fetch or manage dependencies here,
 # # either manually or with a tool like "godep".)
 #RUN HTTPS_PROXY=https://10.30.0.10:3128 go get -u all
-RUN HTTPS_PROXY=https://10.30.0.10:3128 go get github.com/lib/pq github.com/go-gorp/gorp github.com/gin-gonic/gin
-RUN HTTPS_PROXY=https://10.30.0.10:3128 go install github.com/latitude-RESTsec-lab/api-gingonic
+RUN  go get github.com/lib/pq github.com/go-gorp/gorp github.com/gin-gonic/gin
+RUN  go install github.com/restsec/api-gingonic
 
 # Run the outyet command by default when the container starts.
-#RUN cp /go/src/github.com/latitude-RESTsec-lab/api-gingonic/config.json /go/bin/config.json
+#RUN cp /go/src/github.com/restsec/api-gingonic/config.json /go/bin/config.json
 
 ADD ./config.json .
 ADD ./devssl ./devssl
